@@ -6,7 +6,7 @@ function run_introduction(varargin)
 % provide a string to specify the screen that is being used (from
 % screen_info), or else you will be prompted for it
 
-addpath([ pwd '/helper_functions']);   % add path to helper functions
+addpath([pwd '/helper_functions']);   % add path to helper functions
 addpath([pwd '/ShadlenDotsX' ]);
 
 % GET EXPERIMENT VARIABLES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -18,12 +18,17 @@ dat.scr = select_screen(varargin);
 dat.subj        = input('Enter participant code:','s');
 
 dat.test_type            = 'introduction';
+%dat.speed                = [0.01 0.20];                  % velInFlow parameters used in smoke sim files; higher values faster smoke
+%dat.density              = [0.01 0.1 0.2];               % density parameter for smoke rendering; higher values, denser smoke
+
 dat.coherences           = [100 50 15];                         % coherence conditions (0 trials will be added to match
 dat.directions           = [45 135 225 315];                    % motion directions to test
 dat.main_direction       = randsample(dat.directions,1);        % randomly selection motion direction for VPL
 dat.repeats              = [4 4 4];                             % number of repeats for each coherence level (at each motion direction), we can do less for high coherences
 
-dat.feedback    = 0; % provide auditory feedback? should be zero unless debugging
+dat.smoke_dir            = 'E:\Dropbox\Dartmouth\Smoke\Manta\render_out\02-23-2017\onlyBaseFlow_fast_front_02-23-2017'
+
+dat.feedback    = 1; % provide auditory feedback? should be zero unless debugging
 dat.save_stim   = 0; % save stimulus images, should basically always be zero!!
 do_plot         = 1; % plot results immediately
 

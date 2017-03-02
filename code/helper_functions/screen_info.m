@@ -6,6 +6,20 @@ scr.name  = screen_name;
 
 switch screen_name
     
+     case 'maxLab'  % this is a Asus VS238H-P
+        
+        scr.screenNumber        = 2;        % Use max screen number - 0 for primary screen or single screen set ups, 1 for secondary screen (only if 2 screen are enabled)
+        
+        scr.viewDistCm          = 75;       % distance subject views screen from; fix this later
+        scr.widthCm             = 50.92;                         
+        scr.heightCm            = 28.64;  
+        scr.skipSync            = 1;        % skip sync test for testing on this computer
+        
+        % keys used to indicate directions in this order: (1) up right, (2) up left, (3) down left, (4) down right
+        scr.response_mapping    = {'u','r','c','m'};
+        
+        scr.letter_intensity_difference = 80; % number less than 106, smaller numbers should make the letter task harder
+    
     case 'emilyOffice'
         
         scr.screenNumber        = 1;        % Use max screen number - 0 for primary screen or single screen set ups, 1 for secondary screen (only if 2 screen are enabled)
