@@ -18,7 +18,7 @@ dat.scr = select_screen(varargin);
 dat.subj        = input('Enter participant code:','s');
 
 dat.test_type            = 'introduction';
-%dat.speed                = [0.01 0.20];                  % velInFlow parameters used in smoke sim files; higher values faster smoke
+%dat.speed                = [0.1 0.25];                  % velInFlow parameters used in smoke sim files; higher values faster smoke
 %dat.density              = [0.01 0.1 0.2];               % density parameter for smoke rendering; higher values, denser smoke
 
 dat.coherences           = [100 50 15];                         % coherence conditions (0 trials will be added to match
@@ -36,14 +36,15 @@ do_plot         = 1; % plot results immediately
 dat.timeNow     = datestr(clock,'mm_dd_yy_HHMMSS'); 
 dat.fileName    = [ dat.subj '_introduction_' dat.timeNow '.mat'];
 
+
 % run PTB commands in try/catch loop
 try
     
     % SET UP SCREEN, STIMULUS, WINDOW, KEYS %%%%%%%%%%%%%%%%%%%%%%%%%%
     
     [dat.scr, w, ~]         = screen_setup(dat.scr);        % PTB window
-    dat                     = trial_setup_introduction(dat);     % trial properties
-    [dat,keys]              = keys_setup(dat);              % key responses
+    dat                     = trial_setup_introduction(dat);% trial properties
+    [dat,keys]              = keys_setup(dat);              % key responses --> make own!
     dat                     = stimulus_setup(dat);          % stimulus visual properties
 
     screenInfo              = createScreenInfoForShadlen(dat,w); % screen info struct for Shadlen code

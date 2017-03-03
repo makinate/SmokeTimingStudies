@@ -16,6 +16,9 @@ switch screen_name
         scr.skipSync            = 1;        % skip sync test for testing on this computer
         
         % keys used to indicate directions in this order: (1) up right, (2) up left, (3) down left, (4) down right
+        % note to self: adjust this for own experiment. probably only 1
+        % response key needed. 
+        % scr.response_mapping    = {'h'};
         scr.response_mapping    = {'u','r','c','m'};
         
         scr.letter_intensity_difference = 80; % number less than 106, smaller numbers should make the letter task harder

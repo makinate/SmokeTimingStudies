@@ -5,10 +5,9 @@ KbName('UnifyKeyNames');  % will switch internal naming scheme from OS sceme to 
 keys.space      = KbName('space');
 keys.esc        = KbName('ESCAPE');
 
-% use own response key
-% keys.TTCresponse = KbName(dat.scr.response_mapping(1));
+key.TTCresponse = KbName(dat.scr.response_mapping(1));
 
-% probably won't need these
+% probab
 keys.upright        = KbName(dat.scr.response_mapping(1));
 keys.upleft         = KbName(dat.scr.response_mapping(2));
 keys.downleft       = KbName(dat.scr.response_mapping(3));
