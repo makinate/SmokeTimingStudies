@@ -8,3 +8,4 @@ if ~exist(['../data/' dat.subj],'dir');
 end
 
 save(['../data/' dat.subj '/' dat.fileName],'dat');
+display(['Data directory: ../data/' dat.subj '/' dat.fileName]);

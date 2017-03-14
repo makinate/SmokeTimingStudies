@@ -1,25 +1,25 @@
-function frames = load_stimulus_frames(test_type,speed,density,duration)
-%
-%
+function frames = load_stimulus_frames(test_type, speed, density, duration, distance, repeat)
+
+% preallocate motion matrices
+frames = NaN(848,1507,duration);
 
 % generate filename (paths should be somewhere too)
-
 % load in all pngs, or something based on duration
-
-image_folders = ['E:/Dropbox/Dartmouth/Smoke/Blender/renderings/laptop']
-
+image_folders = ['E:/Dropbox/Dartmouth/Smoke/Manta/render_out/VSS/' test_type '/speed' num2str(speed) '_rep' num2str(sprintf('%02d',repeat)) '_den' num2str(sprintf('%02d',density)) '_dist' num2str(distance) '_' test_type '_front'];
+display(image_folders)
 % get file listing
-listing = dir([folder_name '/*.png']);
-
-% if this slow, try preallocating the frames matrix
-% frames = zeros(x,y,duration)
+listing = dir([image_folders '/*.png']);
 
 % read in image to video
-for x = 1:duration
-    
-        im = imread([folder_name '/' listing(x).name]);
+for x = 1: duration
         
-        frames(:,:,x) = im;
+    % read image from folder
+    im = imread([image_folders '/' listing(x).name]);
+    % convert it to grayscale (removes color dim)
+    im = rgb2gray(im);
+    
+    % add image to frames object
+    frames(:,:,x) = im;
 
 end
 

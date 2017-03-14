@@ -10,10 +10,9 @@ resp = keyCode(keys.space);
 if resp == 1
     
     % get response time
-    
     dat.trials.resp(trial)  = timeOfPress - stimDone;
     keys.isDown = 1;
-    
+    display(['TTC estimate: ' num2str(dat.trials.resp(trial))]);
 elseif keyCode(keys.esc)
     
     keys.killed = 1;
