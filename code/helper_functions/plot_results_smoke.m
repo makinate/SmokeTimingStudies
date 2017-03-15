@@ -1,4 +1,4 @@
-function plot_results_smoke(dat,showTraining)
+function plot_results_smoke(dat)
 %
 % plot motion detection performance for pre- and post- tests or
 % introduction for a given dataset (dat)
@@ -26,6 +26,8 @@ if isempty(dat)
 %     dat.trials.isCorrect    = [];
     dat.speeds                = [];
     dat.densities             = [];
+    dat.durations             = [];
+    dat.distances             = [];
     dat.trials.speed          = [];
 
     % load these fields from each selected file
@@ -52,6 +54,8 @@ if isempty(dat)
              
              dat.speeds        = [dat.speeds tmp.dat.speeds];
              dat.densities     = [dat.densities tmp.dat.densities];
+             dat.durationsFs   = [dat.durationsFs tmp.dat.durationsFs];
+             dat.distances     = [dat.distances tmp.dat.distances];
              dat.trials.resp   = [dat.trials.resp tmp.dat.trials.resp];
         end
         
@@ -60,6 +64,8 @@ if isempty(dat)
 %         dat.directions = unique(dat.directions);
         dat.speeds      = unique(dat.speeds);
         dat.densities   = unique(dat.densities);
+        dat.durationsFs   = unique(dat.durationsFs);
+        dat.distances   = unique(dat.distances);
 
         
         % just takes the test type from the last loaded file, you assumes that
@@ -74,13 +80,6 @@ end
 
 figure; hold on;
 
-% if requested, the training direction is listed in the title
-if(showTraining)
-    suptitle([dat.test_type ' training on ' num2str(dat.main_direction)]);
-else
-    suptitle(dat.test_type);
-end
-
 set(gcf,'color',[1 1 1]);
 
 %for each speed
@@ -89,83 +88,39 @@ for b = 1:length(dat.speeds)
     % for each density
     for d = 1:length(dat.densities)
         
-        speed(b,d) = dat.speeds(b);
-        density(b,d) = dat.densities(d);
+        % for each distance
+        for e = 1:length(dat.distances)
+            
+            for f = 1:length(dat.durationsFs)
         
-        % trials with this coherence and this direction
-        %trial_inds = dat.trials.coherence == coherence(b,d) & dat.trials.direction == direction(b,d) & ~isnan(dat.trials.resp);
-              
-        % trials with this coherence and NOT this direction
-        % noise_inds = dat.trials.coherence == coherence(b,d) & dat.trials.direction ~= direction(b,d) & ~isnan(dat.trials.resp);
-        
-        % performance
-        %percent_correct(b,d)    = 100*sum(dat.trials.isCorrect(trial_inds))/sum(trial_inds);
-        %false_alarms(b,d)       = 100*sum(dat.trials.resp == direction(b,d) & noise_inds)/sum(noise_inds);
-        
-        display(dat.trials.resp(b,d));
-        %mean_resp(b,d) = mean(dat.trials.resp(b,d));
+                speed(b,d,e,f)    = dat.speeds(b);
+                density(b,d,e,f)  = dat.densities(d);
+                distance(b,d,e,f) = dat.distances(e);
+                duration(b,d,e,f) = dat.durationsFs(f);
 
-        % d prime - calculated on each motion direction
-%         if numel(trial_inds) > 1 && numel(noise_inds) > 1
-%             [dp(b,d),beta(b,d)] = dprime(percent_correct(b,d)/100,false_alarms(b,d)/100,sum(trial_inds)); 
-%         else
-%             dp(b,d) = NaN;
-%         end
+                % trials with this coherence and this direction
+                trial_inds = dat.trials.speed == speed(b,d,e,f) & dat.trials.density == density(b,d,e,f) & dat.trials.distance == distance(b,d,e,f) & dat.trials.duration == duration(b,d,e,f) & ~isnan(dat.trials.resp);
+
+                resp_tmp = dat.trials.resp(trial_inds);
+
+                subplot(2,3,b); hold on;
+                plot(speed(b,d,e,f), resp_tmp, 'ko');
+                
+                ylabel('response time');
+                title(['speed = ' num2str(speed(b))]);
+                legend();
         
+        
+                median_resp(b,d,e,f) = median(dat.trials.resp(trial_inds));
+
+            end
+        end     
     end
     
-    %subplot(1,2,1); hold on;
-   
-%     h(b) = plot(direction(b,:),percent_correct(b,:),'o-','color',ColorIt(b),'markerfacecolor',ColorIt(b));
-
-%     subplot(1,2,2); hold on;
-%     plot(direction(b,:),dp(b,:),'o-','color',ColorIt(b),'markerfacecolor',ColorIt(b));
+    subplot(2,3,b); hold on;
+    plot(density(b,:), median_resp(b,:));
+    xlabel('density');
     
 end
 
-% average all coherences
-% for d = 1:length(dat.directions)
-%     
-%     trial_inds = dat.trials.direction == dat.directions(d) & ~isnan(dat.trials.resp);
-%     noise_inds = dat.trials.direction ~= dat.directions(d) & ~isnan(dat.trials.resp);
-%     
-%     percent_correct_all(d)    = 100*sum(dat.trials.isCorrect(trial_inds))/sum(trial_inds);
-%     false_alarms_all(d)       = 100*sum(dat.trials.resp == dat.directions(d) & noise_inds)/sum(noise_inds);
-%     
-%     % d prime
-%     if numel(trial_inds) > 1 && numel(noise_inds) > 1
-%         [dp_all(d),beta_all(d)] = dprime(percent_correct_all(d)/100,false_alarms_all(d)/100,sum(trial_inds));
-%     else
-%         dp(b,d) = NaN;
-%     end
-%     
-% end
-% 
-% subplot(1,2,1); hold on;
-% plot(dat.directions,percent_correct_all,'o-','color',ColorIt('k'),'markerfacecolor',ColorIt('k'),'linewidth',2);
-% 
-% subplot(1,2,2); hold on;
-% plot(dat.directions,dp_all,'o-','color',ColorIt('k'),'markerfacecolor',ColorIt('k'),'linewidth',2);
 
-
-% add labels and legend
-subplot(1,2,1); hold on;
-h = boxplot(dat.speed, dat.trial.resp)
-lh = legend(h,cellstr(num2str(coherence(:,1), '%-d')),'location','southeast');
-hlt = text(...
-    'Parent', lh.DecorationContainer, ...
-    'String', 'coherence', ...
-    'HorizontalAlignment', 'center', ...
-    'VerticalAlignment', 'bottom', ...
-    'Position', [0.5, 1.05, 0], ...
-    'Units', 'normalized');
-ylabel('mean response time');
-xlabel('speed');
-ylim([0 100]);
-box on;
-% 
-% subplot(1,2,2); hold on;
-% ylabel('sensitivity');
-% xlabel('motion direction');
-% ylim([0 5]);
-% box on;

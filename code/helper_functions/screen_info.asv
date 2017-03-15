@@ -41,8 +41,8 @@ switch screen_name
         scr.response_mapping    = {'u','r','c','m'};
         
         scr.letter_intensity_difference = 80; % number less than 106, smaller numbers should make the letter task harder
-       
-        scr.image_dir = 'E:/Dropbox/Dartmouth/Smoke/Manta/render_out/VSS/';
+        scr.image_dir = uigetdir('E:/Dropbox/Dartmouth/Smoke/Manta/render_out/', ['pick dem filez'); 
+        %scr.image_dir = 'E:/Dropbox/Dartmouth/Smoke/Manta/render_out/VSS/';
     
     case 'emilyOffice'
         

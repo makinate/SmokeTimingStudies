@@ -47,6 +47,8 @@ do_plot         = 1; % plot results immediately
 dat.timeNow     = datestr(clock,'mm_dd_yy_HHMMSS'); 
 dat.fileName    = [ dat.subj '_' dat.test_type '_' dat.timeNow '.mat'];
 
+
+
 % run PTB commands in try/catch loop
 try
     
@@ -57,7 +59,6 @@ try
     [dat,keys]              = keys_setup_smoke(dat);      % key responses
     dat.start               = GetSecs;
     dat                     = stimulus_setup(dat);        % stimulus visual properties
-    
     
     % DRAW INTRO SCREEN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -88,7 +89,7 @@ try
         display(['trial = ' num2str(trial) '  speed = ' num2str(speed) '   density = ' num2str(density)]);
         
         %preload video frames for this stimulus
-        frames = load_stimulus_frames(dat.test_type, speed, density, duration, distance, repeat);
+        frames = load_stimulus_frames(dat.scr.image_dir, dat.test_type, speed, density, duration, distance, repeat);
         
         % prompt for key press to start
         Screen('FillRect', w, [0 0 0]);
@@ -106,6 +107,7 @@ try
         Screen('Flip',  w, [], 1);
         WaitSecs(0.25);			% slight delay before starting
         
+        stimStart = GetSecs;
       
         % display frames at framerate
         for x = 1:duration
@@ -116,8 +118,12 @@ try
         
         stimDone = GetSecs;
         
+        
+        
         Screen('FillRect', w, [0 0 0]);
         Screen('Flip',  w, [], 1);
+        
+        
         
         % get subject responses
         while keys.isDown == 0
@@ -149,7 +155,7 @@ try
     
     % draw and save plot if requested
     if do_plot && t > 1
-        plot_results_smoke(dat,0);
+        plot_results_smoke(dat);
         saveas(gcf,['../data/' dat.subj '/' strrep(dat.fileName,'mat','pdf')]);
     end
     

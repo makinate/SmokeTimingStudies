@@ -46,6 +46,13 @@ else
     display(['Frame Rate = ' num2str(scr.frameRate) 'Hz']);
 end
 
+% 
+% if framerate is not 60 error out!
+if scr.frameRate ~= 60
+    error('SOMETHING TERRIBLE HAS HAPPENED');
+end
+
+
 % set window to priority
 priorityLevel = MaxPriority(w,'KbCheck');
 Priority(priorityLevel);
