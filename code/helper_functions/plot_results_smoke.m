@@ -102,6 +102,7 @@ for b = 1:length(dat.speeds)
         %percent_correct(b,d)    = 100*sum(dat.trials.isCorrect(trial_inds))/sum(trial_inds);
         %false_alarms(b,d)       = 100*sum(dat.trials.resp == direction(b,d) & noise_inds)/sum(noise_inds);
         
+        display(dat.trials.resp(b,d));
         %mean_resp(b,d) = mean(dat.trials.resp(b,d));
 
         % d prime - calculated on each motion direction

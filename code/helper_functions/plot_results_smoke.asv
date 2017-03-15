@@ -26,18 +26,14 @@ if isempty(dat)
 %     dat.trials.isCorrect    = [];
     dat.speeds                = [];
     dat.densities             = [];
-    dat.distances             = [];
-    dat.durationsFs           = [];
-    dat.repeats               = [];
     dat.trials.speed          = [];
-    dat.trials.density        = [];
-    dat.trials.distance       = [];
-    
+
     % load these fields from each selected file
-    if ~iscell(files)
+    if ~iscell(files) % determine if files is NOT a cell array
         
         % just one file to be loaded
         load([path '/' files])
+        display([path '/' files])
         
     else
         
@@ -53,21 +49,24 @@ if isempty(dat)
 %             dat.trials.direction    = [dat.trials.direction tmp.dat.trials.direction];
 %             dat.trials.resp         = [dat.trials.resp tmp.dat.trials.resp];
 %             dat.trials.isCorrect    = [dat.trials.isCorrect tmp.dat.trials.isCorrect];
+             
+             dat.speeds        = [dat.speeds tmp.dat.speeds];
+             dat.densities     = [dat.densities tmp.dat.densities];
+             dat.trials.resp   = [dat.trials.resp tmp.dat.trials.resp];
         end
         
         % unique stimulus types?
 %         dat.coherences = unique(dat.coherences);
 %         dat.directions = unique(dat.directions);
-        dat.speeds = unique(dat.speeds);
-        dat.densities = unique(dat.densities);
-        dat.distances = unique(dat.distances);
-        dat.durationsFs = unique(dat.durationsFs); 
+        dat.speeds      = unique(dat.speeds);
+        dat.densities   = unique(dat.densities);
+
         
         % just takes the test type from the last loaded file, you assumes that
         % you did not accidently select two different test types (e.g., a pre
         % and a post)
         dat.test_type = tmp.dat.test_type;
-        dat.main_dirction = tmp.dat.main_direction;
+        %dat.main_dirction = tmp.dat.main_direction;
         
     end
     
@@ -95,58 +94,63 @@ for b = 1:length(dat.speeds)
         
         % trials with this coherence and this direction
         %trial_inds = dat.trials.coherence == coherence(b,d) & dat.trials.direction == direction(b,d) & ~isnan(dat.trials.resp);
-        
+              
         % trials with this coherence and NOT this direction
-       % noise_inds = dat.trials.coherence == coherence(b,d) & dat.trials.direction ~= direction(b,d) & ~isnan(dat.trials.resp);
+        % noise_inds = dat.trials.coherence == coherence(b,d) & dat.trials.direction ~= direction(b,d) & ~isnan(dat.trials.resp);
         
         % performance
-        percent_correct(b,d)    = 100*sum(dat.trials.isCorrect(trial_inds))/sum(trial_inds);
-        false_alarms(b,d)       = 100*sum(dat.trials.resp == direction(b,d) & noise_inds)/sum(noise_inds);
+        %percent_correct(b,d)    = 100*sum(dat.trials.isCorrect(trial_inds))/sum(trial_inds);
+        %false_alarms(b,d)       = 100*sum(dat.trials.resp == direction(b,d) & noise_inds)/sum(noise_inds);
         
+        display(dat.tr
+        %mean_resp(b,d) = mean(dat.trials.resp(b,d));
+
         % d prime - calculated on each motion direction
-        if numel(trial_inds) > 1 && numel(noise_inds) > 1
-            [dp(b,d),beta(b,d)] = dprime(percent_correct(b,d)/100,false_alarms(b,d)/100,sum(trial_inds)); 
-        else
-            dp(b,d) = NaN;
-        end
+%         if numel(trial_inds) > 1 && numel(noise_inds) > 1
+%             [dp(b,d),beta(b,d)] = dprime(percent_correct(b,d)/100,false_alarms(b,d)/100,sum(trial_inds)); 
+%         else
+%             dp(b,d) = NaN;
+%         end
         
     end
     
-    subplot(1,2,1); hold on;
-    h(b) = plot(direction(b,:),percent_correct(b,:),'o-','color',ColorIt(b),'markerfacecolor',ColorIt(b));
-    
-    subplot(1,2,2); hold on;
-    plot(direction(b,:),dp(b,:),'o-','color',ColorIt(b),'markerfacecolor',ColorIt(b));
+    %subplot(1,2,1); hold on;
+   
+%     h(b) = plot(direction(b,:),percent_correct(b,:),'o-','color',ColorIt(b),'markerfacecolor',ColorIt(b));
+
+%     subplot(1,2,2); hold on;
+%     plot(direction(b,:),dp(b,:),'o-','color',ColorIt(b),'markerfacecolor',ColorIt(b));
     
 end
 
 % average all coherences
-for d = 1:length(dat.directions)
-    
-    trial_inds = dat.trials.direction == dat.directions(d) & ~isnan(dat.trials.resp);
-    noise_inds = dat.trials.direction ~= dat.directions(d) & ~isnan(dat.trials.resp);
-    
-    percent_correct_all(d)    = 100*sum(dat.trials.isCorrect(trial_inds))/sum(trial_inds);
-    false_alarms_all(d)       = 100*sum(dat.trials.resp == dat.directions(d) & noise_inds)/sum(noise_inds);
-    
-    % d prime
-    if numel(trial_inds) > 1 && numel(noise_inds) > 1
-        [dp_all(d),beta_all(d)] = dprime(percent_correct_all(d)/100,false_alarms_all(d)/100,sum(trial_inds));
-    else
-        dp(b,d) = NaN;
-    end
-    
-end
-
-subplot(1,2,1); hold on;
-plot(dat.directions,percent_correct_all,'o-','color',ColorIt('k'),'markerfacecolor',ColorIt('k'),'linewidth',2);
-
-subplot(1,2,2); hold on;
-plot(dat.directions,dp_all,'o-','color',ColorIt('k'),'markerfacecolor',ColorIt('k'),'linewidth',2);
+% for d = 1:length(dat.directions)
+%     
+%     trial_inds = dat.trials.direction == dat.directions(d) & ~isnan(dat.trials.resp);
+%     noise_inds = dat.trials.direction ~= dat.directions(d) & ~isnan(dat.trials.resp);
+%     
+%     percent_correct_all(d)    = 100*sum(dat.trials.isCorrect(trial_inds))/sum(trial_inds);
+%     false_alarms_all(d)       = 100*sum(dat.trials.resp == dat.directions(d) & noise_inds)/sum(noise_inds);
+%     
+%     % d prime
+%     if numel(trial_inds) > 1 && numel(noise_inds) > 1
+%         [dp_all(d),beta_all(d)] = dprime(percent_correct_all(d)/100,false_alarms_all(d)/100,sum(trial_inds));
+%     else
+%         dp(b,d) = NaN;
+%     end
+%     
+% end
+% 
+% subplot(1,2,1); hold on;
+% plot(dat.directions,percent_correct_all,'o-','color',ColorIt('k'),'markerfacecolor',ColorIt('k'),'linewidth',2);
+% 
+% subplot(1,2,2); hold on;
+% plot(dat.directions,dp_all,'o-','color',ColorIt('k'),'markerfacecolor',ColorIt('k'),'linewidth',2);
 
 
 % add labels and legend
 subplot(1,2,1); hold on;
+h = boxplot(dat.speed, dat.trial.resp)
 lh = legend(h,cellstr(num2str(coherence(:,1), '%-d')),'location','southeast');
 hlt = text(...
     'Parent', lh.DecorationContainer, ...
@@ -155,13 +159,13 @@ hlt = text(...
     'VerticalAlignment', 'bottom', ...
     'Position', [0.5, 1.05, 0], ...
     'Units', 'normalized');
-ylabel('percent correct');
-xlabel('motion direction');
+ylabel('mean response time');
+xlabel('speed');
 ylim([0 100]);
 box on;
-
-subplot(1,2,2); hold on;
-ylabel('sensitivity');
-xlabel('motion direction');
-ylim([0 5]);
-box on;
+% 
+% subplot(1,2,2); hold on;
+% ylabel('sensitivity');
+% xlabel('motion direction');
+% ylim([0 5]);
+% box on;
