@@ -6,14 +6,14 @@ scr.name  = screen_name;
 
 switch screen_name
     
-    case 'macMiniLab'  % this is a Asus VS238H-P
+    case 'mmLab'  % this is a ViewSonic
         
-        scr.screenNumber        = 1;        % Use max screen number - 0 for primary screen or single screen set ups, 1 for secondary screen (only if 2 screen are enabled)
+        scr.screenNumber        = 0;        % Use max screen number - 0 for primary screen or single screen set ups, 1 for secondary screen (only if 2 screen are enabled)
         
         scr.viewDistCm          = 75;       % distance subject views screen from; fix this later
         scr.widthCm             = 50.92;                         
         scr.heightCm            = 28.64;  
-        scr.skipSync            = 1;        % skip sync test for testing on this computer
+        scr.skipSync            = 0;        % skip sync test for testing on this computer
         
         % keys used to indicate directions in this order: (1) up right, (2) up left, (3) down left, (4) down right
         % note to self: adjust this for own experiment. probably only 1
@@ -23,8 +23,8 @@ switch screen_name
         
         scr.letter_intensity_difference = 80; % number less than 106, smaller numbers should make the letter task harder
         
-        scr.image_dir = uigetdir; 
-    
+        scr.image_dir = '/users/makinate/Dropbox/Dartmouth/Smoke/Manta/render_out/VSS'; 
+ 
     case 'maxLab'  % this is a Asus VS238H-P
         
         scr.screenNumber        = 2;        % Use max screen number - 0 for primary screen or single screen set ups, 1 for secondary screen (only if 2 screen are enabled)

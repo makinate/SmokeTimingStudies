@@ -11,6 +11,8 @@ dat.trials.distance     = [];
 
 % set up a trial counter
 tr_cnt = 0;
+trialnum_total = length(dat.speeds) + length(dat.densities) + length(dat.durationsFs) + length(dat.distances); 
+
 
 for c = 1:length(dat.speeds)
     for n = 1:length(dat.densities)
@@ -36,6 +38,7 @@ end
 dat.trials.trialnum = Shuffle(1:tr_cnt);
 
 % empty response arrays
+dat.trials.resp             = zeros(trialnum_total,1);;
 dat.trials.respTime         = NaN*ones(1,tr_cnt);
 
 
