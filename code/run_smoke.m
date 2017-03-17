@@ -22,7 +22,7 @@ training        = input('Is this a training session? Enter 1 for training, entet
 % set up stimulus parameters (these are just ones I want easy access to,
 % others are set in helper_functions keys_setup..., trials_setup...stimulus_setup...
 
-dat.speeds       = [10 20];         % speed conditions 
+dat.speeds       = [10 20];         % speed conditions
 dat.durationsFs  = [45 75];       % trial duration in frames; short (750 ms) --> 45 frames; long (1250 ms) --> 1250 ms
 dat.distances    = [210, 230, 250]; % distance of camera (cm) from smoke source
 dat.repeats      = [5];             % number of repeats for each coherence level (at each motion direction), we can do less for high coherences
@@ -33,11 +33,11 @@ if test_type == 1
     dat.test_type           = 'smoke';
     dat.densities           = [01 10 20];    % smoke density conditions
     plume_object            ='plumes';
-
+    
 elseif test_type == 2
     
     dat.test_type           = 'cylinder';
-    dat.densities           = [99];  
+    dat.densities           = [99];
     plume_object            = 'objects';
     
 else
@@ -48,7 +48,7 @@ dat.feedback    = 0; % provide auditory feedback? should be zero unless debuggin
 do_plot         = 1; % plot results immediately
 
 % get start time for file names
-dat.timeNow     = datestr(clock,'mm_dd_yy_HHMMSS'); 
+dat.timeNow     = datestr(clock,'mm_dd_yy_HHMMSS');
 dat.fileName    = [ dat.subj '_' dat.test_type '_' dat.timeNow '.mat'];
 
 
@@ -71,7 +71,7 @@ try
     % DRAW INTRO SCREEN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     Screen(w,'TextSize',dat.stm.fontSize);
     Screen('FillRect', w, [0 0 0]);
-
+    
     
     
     DrawFormattedText(w, ['Welcome to our experiment! \nYou will see a number of ' dat.test_type ' ' plume_object ' moving closer to you.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/3, [255 255 255]);
@@ -81,23 +81,23 @@ try
     Screen('Flip',  w, [], 1);
     KbWait(-3);
     WaitSecs(0.25);			% slight delay before starting
-
+    
     % RUN TRIALS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   if training
-       dat.training_test = 'training';
-       
-       % pick 10 random trials for training
-       trialnum = 10;
-       
-       % don't plot the results
-       do_plot = 0; 
-   else
-       dat.training_test = 'test';
-       trialnum = length(dat.trials.trialnum);
-   end
-   
-   
-   for t = 1:trialnum                   % for each trial
+    if training
+        dat.training_test = 'training';
+        
+        % pick 10 random trials for training
+        trialnum = 10;
+        
+        % don't plot the results
+        do_plot = 0;
+    else
+        dat.training_test = 'test';
+        trialnum = length(dat.trials.trialnum);
+    end
+    
+    
+    for t = 1:trialnum                   % for each trial
         
         % trial info
         trial       = dat.trials.trialnum(t);      % which stimulus index to take
@@ -105,8 +105,8 @@ try
         density     = dat.trials.density(trial);   % smoke density
         duration    = dat.trials.duration(trial);  % trial duration in frames
         distance    = dat.trials.distance(trial);  % distance of camera from smoke source
-        repeat      = dat.trials.repeat(trial);    % which repeat 
- 
+        repeat      = dat.trials.repeat(trial);    % which repeat
+        
         % display info in matlab prompt for debugging
         display(['trial = ' num2str(trial) '  speed = ' num2str(speed) '   density = ' num2str(density)]);
         
@@ -142,33 +142,33 @@ try
         WaitSecs(0.25);			% slight delay before starting
         
         stimStart = GetSecs;
-      
+        
         % display frames at framerate
         for x = 1:duration
             textureIndex = Screen('MakeTexture',w, frames(:,:,x));
             Screen('DrawTexture', w, textureIndex);
-            Screen('Flip',  w, [], 1); 
+            Screen('Flip',  w, [], 1);
         end
         
         stimDone = GetSecs;
-
+        
         Screen('FillRect', w, [0 0 0]);
         Screen('Flip',  w, [], 1);
         
         
-
+        
         % get subject responses
-        while keys.isDown == 0    
+        while keys.isDown == 0
             % check for response
             [dat,keys] = keys_get_response_smoke(keys,dat,trial,stimDone);
             
         end
         keys.isDown = 0;
-
+        
         if keys.killed
             break
         end
- 
+        
     end
     
     %% aggregate and save data structures
@@ -186,7 +186,11 @@ try
     ShowCursor();
     % draw and save plot if requested
     if do_plot && t > 1
-        plot_results_smoke(dat);
+        if test_type == 1
+            plot_results_smoke(dat);
+        else
+            plot_results_cylinder(dat);
+        end
         saveas(gcf,['../data/' dat.subj '/' strrep(dat.fileName,'mat','pdf')]);
     end
     

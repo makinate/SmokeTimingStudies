@@ -1,4 +1,4 @@
-function plot_results_smoke(dat)
+function plot_results_cylinder(dat)
 %
 % plot motion detection performance for pre- and post- tests or
 % introduction for a given dataset (dat)
@@ -94,7 +94,7 @@ for du = 1:length(dat.durationsFs)
         
         
         
-        subplot(2,3,scnt); hold on; title(['dist = ' num2str(dat.distances(di)) ', dur = ' num2str(dat.durationsFs(du))]);
+        subplot(1,3,scnt); hold on; title(['dist = ' num2str(dat.distances(di)) ', dur = ' num2str(dat.durationsFs(du))]);
         
         % for each density
         for d = 1:length(dat.densities)
@@ -134,9 +134,6 @@ for du = 1:length(dat.durationsFs)
             
         end
         
-        if scnt == 1
-            legend(h,'dens=0.1','dens=10','dens=20')
-        end
         
         scnt = scnt + 1;
         
@@ -169,20 +166,12 @@ bar(dat.durationsFs,mean_dur)
 xlabel('duration');
 ylabel('reaction time');
 
-% density
-for d = 1:length(dat.densities)
-    mean_dens(d) = mean(reshape(median_resp(:, d, :, :), 1, []));
-end
-subplot(2,2,3); hold on; title('density');
-bar(dat.densities,mean_dens)
-xlabel('density');
-ylabel('reaction time');
 
 % distance
 for d = 1:length(dat.distances)
     mean_dist(d) = mean(reshape(median_resp(:, :, d, :), 1, []));
 end
-subplot(2,2,4); hold on; title('distance');
+subplot(2,2,3); hold on; title('distance');
 bar(dat.distances,mean_dist)
 xlabel('distance');
 ylabel('reaction time');
