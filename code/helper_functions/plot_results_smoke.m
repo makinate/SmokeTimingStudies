@@ -83,43 +83,45 @@ figure; hold on;
 set(gcf,'color',[1 1 1]);
 
 %for each speed
-for b = 1:length(dat.speeds)
+for s = 1:length(dat.speeds)
     
     % for each density
     for d = 1:length(dat.densities)
         
         % for each distance
-        for e = 1:length(dat.distances)
+        for di = 1:length(dat.distances)
             
-            for f = 1:length(dat.durationsFs)
+            for du = 1:length(dat.durationsFs)
         
-                speed(b,d,e,f)    = dat.speeds(b);
-                density(b,d,e,f)  = dat.densities(d);
-                distance(b,d,e,f) = dat.distances(e);
-                duration(b,d,e,f) = dat.durationsFs(f);
+                speed(s,d,di,du)    = dat.speeds(s);
+                density(s,d,di,du)  = dat.densities(d);
+                distance(s,d,di,du) = dat.distances(di);
+                duration(s,d,di,du) = dat.durationsFs(du);
 
                 % trials with this coherence and this direction
-                trial_inds = dat.trials.speed == speed(b,d,e,f) & dat.trials.density == density(b,d,e,f) & dat.trials.distance == distance(b,d,e,f) & dat.trials.duration == duration(b,d,e,f) & ~isnan(dat.trials.resp);
+                trial_inds = dat.trials.speed == speed(s,d,di,du) & dat.trials.density == density(s,d,di,du) & dat.trials.distance == distance(s,d,di,du) & dat.trials.duration == duration(s,d,di,du) & ~isnan(dat.trials.resp);
 
                 resp_tmp = dat.trials.resp(trial_inds);
 
-                subplot(2,3,b); hold on;
-                plot(speed(b,d,e,f), resp_tmp, 'ko');
+                subplot(1,2,s); hold on;
+                plot(distance(s,d,di,du), resp_tmp, 'ko');
                 
                 ylabel('response time');
-                title(['speed = ' num2str(speed(b))]);
+                title(['speed = ' num2str(speed(s))]);
                 legend();
         
         
-                median_resp(b,d,e,f) = median(dat.trials.resp(trial_inds));
+                median_resp(s,d,di,du) = median(dat.trials.resp(trial_inds));
 
             end
-        end     
+        end
+        
+        
     end
     
-    subplot(2,3,b); hold on;
-    plot(density(b,:), median_resp(b,:));
-    xlabel('density');
+    subplot(1,2,s); hold on;
+    plot(distance(s,:), median_resp(s,:));
+    xlabel('distance');
     
 end
 
