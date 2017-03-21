@@ -12,7 +12,7 @@ dat.scr = select_screen(varargin);
 % find out participant code and whether this is a pre- or post-test run
 dat.subj        = input('Enter participant code:','s');
 test_type       = input('What test type is this? Enter 1 if smoke, enter 2 if cylinder:');
-training        = input('Is this a training session? Enter 1 for training, entet 2 foe test:');
+training        = input('Is this a training session? Enter 1 if training, enter 0 if test:');
 
 % randomly decide which condition to run
 %stimulus_type = [1 2];
@@ -71,9 +71,7 @@ try
     % DRAW INTRO SCREEN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     Screen(w,'TextSize',dat.stm.fontSize);
     Screen('FillRect', w, [0 0 0]);
-    
-    
-    
+      
     DrawFormattedText(w, ['Welcome to our experiment! \nYou will see a number of ' dat.test_type ' ' plume_object ' moving closer to you.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/3, [255 255 255]);
     DrawFormattedText(w, ['The ' dat.test_type ' ' plume_object ' will disappear before they actually reach you.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/5, [255 255 255]);
     DrawFormattedText(w, ['Press the space bar at the time \nyou think that the ' dat.test_type ' would have actually reached you.'], 'center', dat.scr.y_center_pix, [255 255 255]);
@@ -94,6 +92,7 @@ try
     else
         dat.training_test = 'test';
         trialnum = length(dat.trials.trialnum);
+
     end
     
     
@@ -107,6 +106,7 @@ try
         distance    = dat.trials.distance(trial);  % distance of camera from smoke source
         repeat      = dat.trials.repeat(trial);    % which repeat
         
+        
         % display info in matlab prompt for debugging
         display(['trial = ' num2str(trial) '  speed = ' num2str(speed) '   density = ' num2str(density)]);
         
@@ -119,8 +119,7 @@ try
             DrawFormattedText(w, ['You are halfway done with this section! \nTake a short break if you want to.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/3, [255 255 255]);
             DrawFormattedText(w, 'Press space bar to continue', 'center', dat.scr.y_center_pix + dat.scr.heightPix/4, [255 255 255]);
             Screen('Flip',  w, [], 1);
-            KbWait(-3);
-            
+            KbWait(-3);     
         else
             display('do nothing');
         end
@@ -147,8 +146,21 @@ try
         for x = 1:duration
             textureIndex = Screen('MakeTexture',w, frames(:,:,x));
             Screen('DrawTexture', w, textureIndex);
-            Screen('Flip',  w, [], 1);
+            [~,~,~, missed(x), ~] = Screen('Flip',  w, [], 1);
         end
+        
+        % do some diagnostics
+        for i = 1:length(missed)
+            if missed(i) <= 0
+                missed(i) = 0
+            else
+                missed(i) = 1
+            end
+        end
+        
+        % returns the percent of missed frames for a trial
+        dat.total_missedFrames(t)   = sum(missed);
+        dat.percent_missedFrames(t) = sum(missed)/duration;
         
         stimDone = GetSecs;
         
