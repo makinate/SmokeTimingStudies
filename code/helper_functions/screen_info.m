@@ -10,7 +10,7 @@ switch screen_name
         
         scr.screenNumber        = 0;        % Use max screen number - 0 for primary screen or single screen set ups, 1 for secondary screen (only if 2 screen are enabled)
         
-        scr.viewDistCm          = 39.65;       % distance subject views screen from; fix this later
+        scr.viewDistCm          = 39.65;       % distance subject views screen from; 39.65 if images are not shown full screen/ 51.82 if full screen
         scr.widthCm             = 50.8;                         
         scr.heightCm            = 28.57;  
         scr.skipSync            = 0;        % skip sync test for testing on this computer
