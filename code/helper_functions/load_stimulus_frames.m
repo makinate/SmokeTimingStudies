@@ -14,14 +14,22 @@ listing = dir([image_folders '/*.png']);
 
 % read in image to video
 for x = 1: duration
-        
+    
     % read image from folder
     im = imread([image_folders '/' listing(x).name]);
+    
     % convert it to grayscale (removes color dim)
     im = rgb2gray(im);
     
-    % add image to frames object
-    frames(:,:,x) = im;
+    % upsample images to be 1920 wide (specify bicubic)
+    % DO THIS ONLY IF NEEDED; ADJUST VIEWING DISTANCE IN LAB AND
+    % screen_info
+    %im = imresize(im, [1080/2 1920], 'bicubic');
+    
+end
+
+% add image to frames object
+frames(:,:,x) = im;
 
 end
 

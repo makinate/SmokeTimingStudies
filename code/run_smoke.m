@@ -68,7 +68,7 @@ try
     % hide mouse cursor
     HideCursor();
     
-    % DRAW INTRO SCREEN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% DRAW INTRO SCREEN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     Screen(w,'TextSize',dat.stm.fontSize);
     Screen('FillRect', w, [0 0 0]);
       
@@ -80,7 +80,7 @@ try
     KbWait(-3);
     WaitSecs(0.25);			% slight delay before starting
     
-    % RUN TRIALS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% RUN TRIALS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if training
         dat.training_test = 'training';
         
@@ -112,7 +112,7 @@ try
         
         %preload video frames for this stimulus
         frames = load_stimulus_frames(dat.scr.image_dir, dat.test_type, speed, density, duration, distance, repeat);
-        
+
         % give participant a break halfway
         if sum(dat.trials.resp ~= 0) == trialnum/2 && training ~= 1
             Screen('FillRect', w, [0 0 0]);
