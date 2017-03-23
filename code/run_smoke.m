@@ -18,12 +18,11 @@ training        = input('Is this a training session? Enter 1 if training, enter 
 %stimulus_type = [1 2];
 %test_type = stimulus_type(randi(length(stimulus_type)));
 
-
 % set up stimulus parameters (these are just ones I want easy access to,
 % others are set in helper_functions keys_setup..., trials_setup...stimulus_setup...
 
 dat.speeds       = [10 20];         % speed conditions
-dat.durationsFs  = [45 75];       % trial duration in frames; short (750 ms) --> 45 frames; long (1250 ms) --> 1250 ms
+dat.durationsFs  = [35 70];       % trial duration in frames; short (750 ms) --> 45 frames; long (1250 ms) --> 1250 ms
 dat.distances    = [210, 230, 250]; % distance of camera (cm) from smoke source
 dat.repeats      = [5];             % number of repeats for each coherence level (at each motion direction), we can do less for high coherences
 
@@ -49,7 +48,11 @@ do_plot         = 1; % plot results immediately
 
 % get start time for file names
 dat.timeNow     = datestr(clock,'mm_dd_yy_HHMMSS');
-dat.fileName    = [ dat.subj '_' dat.test_type '_' dat.timeNow '.mat'];
+if training
+    dat.fileName    = [ 'training_' dat.subj '_' dat.test_type '_' dat.timeNow '.mat'];
+else
+    dat.fileName    = [ dat.subj '_' dat.test_type '_' dat.timeNow '.mat'];
+end
 
 
 
@@ -63,7 +66,6 @@ try
     [dat,keys]              = keys_setup_smoke(dat);      % key responses
     dat.start               = GetSecs;
     dat                     = stimulus_setup(dat);        % stimulus visual properties
-    dat.training            = training;
     
     % hide mouse cursor
     HideCursor();
@@ -71,14 +73,18 @@ try
     %% DRAW INTRO SCREEN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     Screen(w,'TextSize',dat.stm.fontSize);
     Screen('FillRect', w, [0 0 0]);
-      
+    
     DrawFormattedText(w, ['Welcome to our experiment! \nYou will see a number of ' dat.test_type ' ' plume_object ' moving closer to you.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/3, [255 255 255]);
     DrawFormattedText(w, ['The ' dat.test_type ' ' plume_object ' will disappear before they actually reach you.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/5, [255 255 255]);
     DrawFormattedText(w, ['Press the space bar at the time \nyou think that the ' dat.test_type ' would have actually reached you.'], 'center', dat.scr.y_center_pix, [255 255 255]);
     DrawFormattedText(w, 'Press space bar to start', 'center', dat.scr.y_center_pix + dat.scr.heightPix/4, [255 255 255]);
     Screen('Flip',  w, [], 1);
     KbWait(-3);
-    WaitSecs(0.25);			% slight delay before starting
+    
+    Screen('FillRect', w, [0 0 0]);
+    DrawFormattedText(w, 'Loading first trial...', 'center', 'center', [255 255 255]);
+    Screen('Flip',  w, [], 1);
+    %WaitSecs(0.25);			% slight delay before starting
     
     %% RUN TRIALS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if training
@@ -92,7 +98,7 @@ try
     else
         dat.training_test = 'test';
         trialnum = length(dat.trials.trialnum);
-
+        
     end
     
     
@@ -112,16 +118,19 @@ try
         
         %preload video frames for this stimulus
         frames = load_stimulus_frames(dat.scr.image_dir, dat.test_type, speed, density, duration, distance, repeat);
-
+        
+        % load frames into texture indices
+        for x = 1:duration
+            textureIndex(x) = Screen('MakeTexture',w, frames(:,:,x));
+        end
+        
         % give participant a break halfway
-        if sum(dat.trials.resp ~= 0) == trialnum/2 && training ~= 1
+        if t == round(trialnum/2) && training ~= 1
             Screen('FillRect', w, [0 0 0]);
             DrawFormattedText(w, ['You are halfway done with this section! \nTake a short break if you want to.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/3, [255 255 255]);
             DrawFormattedText(w, 'Press space bar to continue', 'center', dat.scr.y_center_pix + dat.scr.heightPix/4, [255 255 255]);
             Screen('Flip',  w, [], 1);
-            KbWait(-3);     
-        else
-            display('do nothing');
+            KbWait(-3);
         end
         
         
@@ -144,29 +153,16 @@ try
         
         % display frames at framerate
         for x = 1:duration
-            textureIndex = Screen('MakeTexture',w, frames(:,:,x));
-            Screen('DrawTexture', w, textureIndex);
+            %textureIndex = Screen('MakeTexture',w, frames(:,:,x));
+            Screen('DrawTexture', w, textureIndex(x));
             [~,~,~, missed(x), ~] = Screen('Flip',  w, [], 1);
+            Screen('Close', textureIndex(x))
         end
-        
-        % do some diagnostics
-        for i = 1:length(missed)
-            if missed(i) <= 0
-                missed(i) = 0
-            else
-                missed(i) = 1
-            end
-        end
-        
-        % returns the percent of missed frames for a trial
-        dat.total_missedFrames(t)   = sum(missed);
-        dat.percent_missedFrames(t) = sum(missed)/duration;
         
         stimDone = GetSecs;
         
         Screen('FillRect', w, [0 0 0]);
         Screen('Flip',  w, [], 1);
-        
         
         
         % get subject responses
@@ -180,6 +176,25 @@ try
         if keys.killed
             break
         end
+        
+        Screen('FillRect', w, [0 0 0]);
+        DrawFormattedText(w, 'Loading next trial...', 'center', 'center', [255 255 255]);
+        Screen('Flip',  w, [], 1);
+        
+        % do some diagnostics
+        for i = 1:length(missed)
+            if missed(i) <= 0
+                missed(i) = 0;
+            else
+                missed(i) = 1;
+            end
+        end
+        
+        % returns the percent of missed frames for a trial
+        dat.total_missedFrames(t)   = sum(missed);
+        dat.percent_missedFrames(t) = sum(missed)/duration;
+        dat.stim_target_dur_sec(t)  = (1/dat.scr.frameRate)*duration;
+        dat.stim_actual_dur_sec(t) = stimDone - stimStart;
         
     end
     

@@ -1,7 +1,8 @@
 function frames = load_stimulus_frames(image_dir, test_type, speed, density, duration, distance, repeat)
 
 % preallocate motion matrices
-frames = NaN(848,1507,duration);
+%frames = NaN(848,1507,duration);
+frames = NaN(1080,1920,duration);
 
 % generate filename (paths should be somewhere too)
 % load in all pngs, or something based on duration
@@ -24,12 +25,10 @@ for x = 1: duration
     % upsample images to be 1920 wide (specify bicubic)
     % DO THIS ONLY IF NEEDED; ADJUST VIEWING DISTANCE IN LAB AND
     % screen_info
-    %im = imresize(im, [1080/2 1920], 'bicubic');
+    im = imresize(im, [1080 1920], 'bicubic');
     
-end
-
-% add image to frames object
-frames(:,:,x) = im;
-
+    % add image to frames object
+    frames(:,:,x) = im;
+    
 end
 
