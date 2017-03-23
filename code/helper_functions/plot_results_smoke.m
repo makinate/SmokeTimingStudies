@@ -78,6 +78,9 @@ if isempty(dat)
     
 end
 
+% permute the resp variable
+dat.trials.resp_perm = permute(dat.trials.resp, [2 1])
+
 % list of marker shapes
 mkShape = {'o','s','^'};
 
@@ -92,30 +95,32 @@ for du = 1:length(dat.durationsFs)
     % for each distance
     for di = 1:length(dat.distances)
         
-        
-        
         subplot(2,3,scnt); hold on; title(['dist = ' num2str(dat.distances(di)) ', dur = ' num2str(dat.durationsFs(du))]);
         
         % for each density
         for d = 1:length(dat.densities)
-            
+
             %for each speed
             for s = 1:length(dat.speeds)
                 
-                speed(s,d,di,du)    = dat.speeds(s);
-                density(s,d,di,du)  = dat.densities(d);
-                distance(s,d,di,du) = dat.distances(di);
-                duration(s,d,di,du) = dat.durationsFs(du);
+                speed(du, di, d, s)    = dat.speeds(s);
+                density(du, di, d, s)  = dat.densities(d);
+                distance(du, di, d, s) = dat.distances(di);
+                duration(du, di, d, s) = dat.durationsFs(du);
                 
                 % trials with this combination of parameters
-                trial_inds = dat.trials.speed == speed(s,d,di,du) & dat.trials.density == density(s,d,di,du) & dat.trials.distance == distance(s,d,di,du) & dat.trials.duration == duration(s,d,di,du) & ~isnan(dat.trials.resp);
+                %trial_inds = dat.trials.speed == speed(du, di, d, s) & dat.trials.density == density(du, di, d, s) & dat.trials.distance == distance(du, di, d, s) & dat.trials.duration == duration(du, di, d, s) & ~isnan(dat.trials.resp);
+                trial_inds = dat.trials.speed == speed(du, di, d, s) & dat.trials.density == density(du, di, d, s) & dat.trials.distance == distance(du, di, d, s) & dat.trials.duration == duration(du, di, d, s) & ~isnan(dat.trials.resp_perm);
                 
-                resp_tmp = dat.trials.resp(trial_inds);
+                
+                %resp_tmp = dat.trials.resp(trial_inds);
+                resp_tmp = dat.trials.resp_perm(trial_inds);
+                
                 
                 outlier = any(resp_tmp > 2);
                 
                 subplot(2,3,scnt); hold on;
-                plot(speed(s,d,di,du), resp_tmp, mkShape{d}, 'color',ColorIt(d),'markerfacecolor',ColorIt(d),'markersize',10);
+                plot(speed(du, di, d, s), resp_tmp, mkShape{d}, 'color',ColorIt(d),'markerfacecolor',ColorIt(d),'markersize',10);
                 xlim([0 30]); ylim([0 2]);
                 ylabel('response time (sec)');
                 xlabel('stim speed (au)');
@@ -123,14 +128,16 @@ for du = 1:length(dat.durationsFs)
 
                 %plot outlier indicator
                 if outlier
-                    plot(speed(s,d,di,du) + d - 2, 2, '*', 'color',ColorIt(d),'markerfacecolor',ColorIt(d),'markersize',10);
+                    plot(speed(du, di, d, s) + d - 2, 2, '*', 'color',ColorIt(d),'markerfacecolor',ColorIt(d),'markersize',10);
                 end
                 
-                median_resp(s,d,di,du) = median(dat.trials.resp(trial_inds));
+                %median_resp(du, di, d, s) = median(dat.trials.resp(trial_inds));
+                median_resp(du, di, d, s) = median(dat.trials.resp_perm(trial_inds));
                 
             end
             
-            h(d) = plot(speed(:,d,di,du), median_resp(:,d,di,du), '-', 'color',ColorIt(d),'linewidth',2);
+            %h(d) = plot(speed(:,d,di,du), median_resp(:,d,di,du), '-', 'color',ColorIt(d),'linewidth',2);
+            h(d) = plot(speed(du, di, d, s), median_resp(du, di, d, s), '-', 'color',ColorIt(d),'linewidth',2);
             
         end
         
