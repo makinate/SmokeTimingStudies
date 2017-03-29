@@ -214,9 +214,9 @@ try
     % draw and save plot if requested
     if do_plot && t > 1
         if test_type == 1
-            plot_results_smoke(dat);
+            plot_results_smoke(dat,1);
         else
-            plot_results_cylinder(dat);
+            plot_results_cylinder(dat,1);
         end
         saveas(gcf,['../data/' dat.subj '/' strrep(dat.fileName,'mat','pdf')]);
     end

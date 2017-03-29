@@ -1,14 +1,8 @@
-function plot_results_smoke(dat)
+function dat = plot_results_smoke(dat,showPlots)
 %
-% plot motion detection performance for pre- and post- tests or
-% introduction for a given dataset (dat)
+% plot TTC performance for smoke and cylinders for a given dataset (dat)
 %
-% CONSIDER REMOVING
-% if showTraining == 1, then the randomly selecting training direction will
-% be written at the top of the plot. this is set to zero in
-% run_porepost_test so that the experimentor can check data quality without
-% being exposed to what the training direction is
-%
+addpath([ pwd '/plots']);   % add path to helper functions
 % if dat is empty, you will be prompted to select one or more files with
 % the file browser
 
@@ -18,12 +12,7 @@ if isempty(dat)
     [files,path] = uigetfile('../data/*.mat','Select sessions to analyze','multiselect','on');
     
     % initialize fields needed for plotting
-    %     dat.coherences          = [];
-    %     dat.directions          = [];
-    %     dat.trials.coherence    = [];
-    %     dat.trials.direction    = [];
-    %     dat.trials.resp         = [];
-    %     dat.trials.isCorrect    = [];
+    
     dat.speeds                = [];
     dat.densities             = [];
     dat.durations             = [];
@@ -45,12 +34,6 @@ if isempty(dat)
             display(files(fii));
             tmp = load([path '/' files{fii}]);
             
-            %             dat.coherences          = [dat.coherences tmp.dat.coherences];
-            %             dat.directions          = [dat.directions tmp.dat.directions];
-            %             dat.trials.coherence    = [dat.trials.coherence tmp.dat.trials.coherence];
-            %             dat.trials.direction    = [dat.trials.direction tmp.dat.trials.direction];
-            %             dat.trials.resp         = [dat.trials.resp tmp.dat.trials.resp];
-            %             dat.trials.isCorrect    = [dat.trials.isCorrect tmp.dat.trials.isCorrect];
             
             dat.speeds        = [dat.speeds tmp.dat.speeds];
             dat.densities     = [dat.densities tmp.dat.densities];
@@ -79,13 +62,15 @@ if isempty(dat)
 end
 
 % permute the resp variable
-dat.trials.resp_perm = permute(dat.trials.resp, [2 1])
+%dat.trials.resp_perm = permute(dat.trials.resp, [2 1]);
 
 % list of marker shapes
 mkShape = {'o','s','^'};
 
-figure; hold on;
-setupfig(14,12,16);
+if showPlots
+    figure; hold on;
+    setupfig(14,12,16);
+end
 
 %initialize subplot counter
 scnt = 1;
@@ -95,11 +80,13 @@ for du = 1:length(dat.durationsFs)
     % for each distance
     for di = 1:length(dat.distances)
         
-        subplot(2,3,scnt); hold on; title(['dist = ' num2str(dat.distances(di)) ', dur = ' num2str(dat.durationsFs(du))]);
+        if showPlots
+            subplot(2,3,scnt); hold on; title(['dist = ' num2str(dat.distances(di)) ', dur = ' num2str(dat.durationsFs(du))]);
+        end
         
         % for each density
         for d = 1:length(dat.densities)
-
+            
             %for each speed
             for s = 1:length(dat.speeds)
                 
@@ -108,41 +95,51 @@ for du = 1:length(dat.durationsFs)
                 distance(du, di, d, s) = dat.distances(di);
                 duration(du, di, d, s) = dat.durationsFs(du);
                 
-                % trials with this combination of parameters
-                %trial_inds = dat.trials.speed == speed(du, di, d, s) & dat.trials.density == density(du, di, d, s) & dat.trials.distance == distance(du, di, d, s) & dat.trials.duration == duration(du, di, d, s) & ~isnan(dat.trials.resp);
-                trial_inds = dat.trials.speed == speed(du, di, d, s) & dat.trials.density == density(du, di, d, s) & dat.trials.distance == distance(du, di, d, s) & dat.trials.duration == duration(du, di, d, s) & ~isnan(dat.trials.resp_perm);
+                % make an index vector trials with this combination of parameters
+                trial_inds = dat.trials.speed == speed(du, di, d, s) & dat.trials.density == density(du, di, d, s) & dat.trials.distance == distance(du, di, d, s) & dat.trials.duration == duration(du, di, d, s) & ~isnan(dat.trials.resp);
                 
+                % get the resoinse time for indexed values
+                resp_tmp = dat.trials.resp(trial_inds);
                 
-                %resp_tmp = dat.trials.resp(trial_inds);
-                resp_tmp = dat.trials.resp_perm(trial_inds);
-                
-                
+                % find outliers in response time
                 outlier = any(resp_tmp > 2);
                 
-                subplot(2,3,scnt); hold on;
-                plot(speed(du, di, d, s), resp_tmp, mkShape{d}, 'color',ColorIt(d),'markerfacecolor',ColorIt(d),'markersize',10);
-                xlim([0 30]); ylim([0 2]);
-                ylabel('response time (sec)');
-                xlabel('stim speed (au)');
-                %title(['speed = ' num2str(speed(s))]);
-
-                %plot outlier indicator
-                if outlier
-                    plot(speed(du, di, d, s) + d - 2, 2, '*', 'color',ColorIt(d),'markerfacecolor',ColorIt(d),'markersize',10);
+                if showPlots
+                    % make 2 (duration)x3(distance) scatter plots
+                    subplot(2,3,scnt); hold on;
+                    plot(speed(du, di, d, s), resp_tmp, mkShape{d}, 'color',ColorIt(d),'markerfacecolor',ColorIt(d),'markersize',10);
+                    xlim([0 30]); ylim([0 2]);
+                    ylabel('response time (sec)');
+                    xlabel('stim speed (au)');
+                    
+                    %plot outlier indicator
+                    if outlier
+                        plot(speed(du, di, d, s) + d - 2, 2, '*', 'color',ColorIt(d),'markerfacecolor',ColorIt(d),'markersize',10);
+                    end
+                    
                 end
                 
-                %median_resp(du, di, d, s) = median(dat.trials.resp(trial_inds));
-                median_resp(du, di, d, s) = median(dat.trials.resp_perm(trial_inds));
+                % calculate the median response time for indexed values and
+                % throw them in a 4D matrix
+                median_resp(du, di, d, s) = median(dat.trials.resp(trial_inds));
                 
             end
             
-            %h(d) = plot(speed(:,d,di,du), median_resp(:,d,di,du), '-', 'color',ColorIt(d),'linewidth',2);
-            h(d) = plot(speed(du, di, d, s), median_resp(du, di, d, s), '-', 'color',ColorIt(d),'linewidth',2);
+            
+            if showPlots
+                % plot the median
+                h(d) = plot(speed(du,di,d,s), median_resp(du,di,d,s), '-', 'color',ColorIt(d),'linewidth',2);
+                
+            end
             
         end
         
-        if scnt == 1
-            legend(h,'dens=0.1','dens=10','dens=20')
+        if showPlots
+            if scnt == 1
+                % add a legend
+                legend(h,'dens=0.1','dens=10','dens=20')
+                
+            end
         end
         
         scnt = scnt + 1;
@@ -153,45 +150,65 @@ for du = 1:length(dat.durationsFs)
     
 end
 
-
-figure; hold on;
-setupfig(14,12,16);
+if showPlots
+    % save previous figure
+    saveas(gca,['./plots/' dat.subj '_' dat.test_type '_scatter.eps'],'epsc')
+    saveas(gca,['./plots/' dat.subj '_' dat.test_type '_scatter.jpg'])
+    
+    figure; hold on;
+    setupfig(14,12,16);
+end
 
 % speed effect
 for s = 1:length(dat.speeds)
-    mean_sp(s) = mean(reshape(median_resp(s, :, :, :), 1, []));
+    dat.mean_sp(s) = mean(reshape(median_resp(:, :, :, s), 1, []));
 end
-subplot(2,2,1); hold on; title('speed');
-%plot(dat.speeds,mean_sp,'k-')
-bar(dat.speeds,mean_sp)
-xlabel('speed');
-ylabel('reaction time');
+
+if showPlots
+    subplot(2,2,1); hold on; title('speed');
+    %plot(dat.speeds,mean_sp,'k-')
+    bar(dat.speeds,dat.mean_sp)
+    xlabel('speed');
+    ylabel('reaction time');
+end
 
 % duration effect
 for d = 1:length(dat.durationsFs)
-    mean_dur(d) = mean(reshape(median_resp(:, :, :, d), 1, []));
+    dat.mean_dur(d) = mean(reshape(median_resp(d, :, :, :), 1, []));
 end
-subplot(2,2,2); hold on; title('duration');
-bar(dat.durationsFs,mean_dur)
-xlabel('duration');
-ylabel('reaction time');
+
+if showPlots
+    subplot(2,2,2); hold on; title('duration');
+    bar(dat.durationsFs,dat.mean_dur)
+    xlabel('duration');
+    ylabel('reaction time');
+end
 
 % density
 for d = 1:length(dat.densities)
-    mean_dens(d) = mean(reshape(median_resp(:, d, :, :), 1, []));
+    dat.mean_dens(d) = mean(reshape(median_resp(:, :, d, :), 1, []));
 end
-subplot(2,2,3); hold on; title('density');
-bar(dat.densities,mean_dens)
-xlabel('density');
-ylabel('reaction time');
+
+if showPlots
+    subplot(2,2,3); hold on; title('density');
+    bar(dat.densities,dat.mean_dens)
+    xlabel('density');
+    ylabel('reaction time');
+end
 
 % distance
 for d = 1:length(dat.distances)
-    mean_dist(d) = mean(reshape(median_resp(:, :, d, :), 1, []));
+    dat.mean_dist(d) = mean(reshape(median_resp(:, d, :, :), 1, []));
 end
-subplot(2,2,4); hold on; title('distance');
-bar(dat.distances,mean_dist)
-xlabel('distance');
-ylabel('reaction time');
+
+if showPlots
+    subplot(2,2,4); hold on; title('distance');
+    bar(dat.distances,dat.mean_dist)
+    xlabel('distance');
+    ylabel('reaction time');
+    
+    saveas(gca,['./plots/' dat.subj '_' dat.test_type '_summary.eps'],'epsc')
+    saveas(gca,['./plots/' dat.subj '_' dat.test_type '_summary.jpg'])
+end
 
 

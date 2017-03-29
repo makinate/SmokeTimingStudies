@@ -92,9 +92,8 @@ for du = 1:length(dat.durationsFs)
     % for each distance
     for di = 1:length(dat.distances)
         
-        
-        
-        subplot(1,3,scnt); hold on; title(['dist = ' num2str(dat.distances(di)) ', dur = ' num2str(dat.durationsFs(du))]);
+
+        subplot(2,3,scnt); hold on; title(['dist = ' num2str(dat.distances(di)) ', dur = ' num2str(dat.durationsFs(du))]);
         
         % for each density
         for d = 1:length(dat.densities)
@@ -144,36 +143,36 @@ for du = 1:length(dat.durationsFs)
 end
 
 
-figure; hold on;
-setupfig(14,12,16);
-
-% speed effect
-for s = 1:length(dat.speeds)
-    mean_sp(s) = mean(reshape(median_resp(s, :, :, :), 1, []));
-end
-subplot(2,2,1); hold on; title('speed');
-%plot(dat.speeds,mean_sp,'k-')
-bar(dat.speeds,mean_sp)
-xlabel('speed');
-ylabel('reaction time');
-
-% duration effect
-for d = 1:length(dat.durationsFs)
-    mean_dur(d) = mean(reshape(median_resp(:, :, :, d), 1, []));
-end
-subplot(2,2,2); hold on; title('duration');
-bar(dat.durationsFs,mean_dur)
-xlabel('duration');
-ylabel('reaction time');
-
-
-% distance
-for d = 1:length(dat.distances)
-    mean_dist(d) = mean(reshape(median_resp(:, :, d, :), 1, []));
-end
-subplot(2,2,3); hold on; title('distance');
-bar(dat.distances,mean_dist)
-xlabel('distance');
-ylabel('reaction time');
+% figure; hold on;
+% setupfig(14,12,16);
+% 
+% % speed effect
+% for s = 1:length(dat.speeds)
+%     mean_sp(s) = mean(reshape(median_resp(s, :, :, :), 1, []));
+% end
+% subplot(2,2,1); hold on; title('speed');
+% %plot(dat.speeds,mean_sp,'k-')
+% bar(dat.speeds,mean_sp)
+% xlabel('speed');
+% ylabel('reaction time');
+% 
+% % duration effect
+% for d = 1:length(dat.durationsFs)
+%     mean_dur(d) = mean(reshape(median_resp(:, :, :, d), 1, []));
+% end
+% subplot(2,2,2); hold on; title('duration');
+% bar(dat.durationsFs,mean_dur)
+% xlabel('duration');
+% ylabel('reaction time');
+% 
+% 
+% % distance
+% for d = 1:length(dat.distances)
+%     mean_dist(d) = mean(reshape(median_resp(:, :, d, :), 1, []));
+% end
+% subplot(2,2,3); hold on; title('distance');
+% bar(dat.distances,mean_dist)
+% xlabel('distance');
+% ylabel('reaction time');
 
 

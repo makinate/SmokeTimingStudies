@@ -38,7 +38,7 @@ end
 dat.trials.trialnum = Shuffle(1:tr_cnt);
 
 % empty response arrays
-dat.trials.resp             = zeros(trialnum_total,1);;
+dat.trials.resp             = zeros(1,trialnum_total);
 dat.trials.respTime         = NaN*ones(1,tr_cnt);
 
 
