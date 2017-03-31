@@ -4,7 +4,7 @@ function plot_results_combined_allSubj
 addpath([ pwd '/helper_functions']);   % add path to helper functions
 
 % subject list; expand this as more and more subjects come in
-subjs = {'EAC','MK'};
+subjs = {'EAC', 'MK', 'HS'};
 
 for s = 1:length(subjs)
     
@@ -24,7 +24,7 @@ for s = 1:length(subjs)
     allSubjSpeedSmoke(s,:) = smoke.mean_sp;
     allSubjSpeedDisk(s,:)  = disk.mean_sp;
     
-    allSubjDurSmoke(:,s)   = smoke.mean_dur;
+    allSubjDurSmoke(s,:)   = smoke.mean_dur;
     allSubjDurDisk(s,:)    = disk.mean_dur;
     
     allSubjDistSmoke(s,:)  = smoke.mean_dist;
@@ -68,10 +68,10 @@ setupfig(16,16,16); % setup figure width, height, and font size (helperfunction)
 % speed effect
 subplot(2,2,1); hold on; title('speed');
 %plot(dat.speeds,mean_sp,'k-')
-a = plot(smoke.speeds + 0.1,mean_speed_smoke,'-o','color',ColorIt('r'),'markerfacecolor',ColorIt('r'))
-errorbar(smoke.speeds + 0.1,mean_speed_smoke,std_speed_smoke);
-b = plot(disk.speeds - 0.1,mean_speed_disk,'-o','color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
-errorbar(disk.speeds - 0.1,mean_speed_disk,std_speed_disk);
+a = plot(smoke.speeds + 0.5, mean_speed_smoke,'-o','color',ColorIt('r'),'markerfacecolor',ColorIt('r'))
+errorbar(smoke.speeds + 0.5, mean_speed_smoke,std_speed_smoke);
+b = plot(disk.speeds - 0.5,  mean_speed_disk,'-o','color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
+errorbar(disk.speeds - 0.5,  mean_speed_disk,std_speed_disk);
 xlabel('speed');
 ylabel('reaction time');
 legend([a,b], 'smoke', 'disk', 'Location', 'southwest');
@@ -83,12 +83,14 @@ subplot(2,2,2); hold on; title('duration');
 %plot(dat.speeds,mean_sp,'k-')
 %plot(smoke.durationsFs,smoke.mean_dur,'-o','color',ColorIt('r'),'markerfacecolor',ColorIt('r'))
 %plot(disk.durationsFs,disk.mean_dur,'-o','color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
-plot(smoke.durationsFs + 0.1, mean_dur_smoke,'-o','color',ColorIt('r'),'markerfacecolor',ColorIt('r'))
-errorbar(disk.durationsFs + 0.1,    mean_dur_smoke, std_dur_smoke);
-plot(disk.durationsFs  - 0.1, mean_dur_disk,'-o','color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
-errorbar(disk.durationsFs - 0.1,    mean_dur_disk,  std_dur_disk);
+plot(smoke.durationsFs + 0.5,       mean_dur_smoke,'-o','color',ColorIt('r'),'markerfacecolor',ColorIt('r'))
+errorbar(disk.durationsFs + 0.5,    mean_dur_smoke, std_dur_smoke);
+plot(disk.durationsFs  - 0.5,       mean_dur_disk,'-o','color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
+errorbar(disk.durationsFs - 0.5,    mean_dur_disk,  std_dur_disk);
 xlabel('duration');
 ylabel('reaction time');
+
+
 
 % density
 subplot(2,2,3); hold on; title('density');
@@ -97,8 +99,8 @@ subplot(2,2,3); hold on; title('density');
 %plot(10,disk.mean_dens,'-o','color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
 plot(smoke.densities,    mean_dens_smoke,'-o','color',ColorIt('r'),'markerfacecolor',ColorIt('r'))
 errorbar(smoke.densities, mean_dens_smoke, std_dens_smoke);
-plot(10.1,               mean_dens_disk,'-o', 'color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
-errorbar(10.1,            mean_dens_disk,  std_dens_disk);
+plot(10.5,               mean_dens_disk,'-o', 'color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
+errorbar(10.5,            mean_dens_disk,  std_dens_disk);
 xlabel('densities');
 ylabel('reaction time');
 
