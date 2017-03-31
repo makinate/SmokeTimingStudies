@@ -214,7 +214,7 @@ try
     % draw and save plot if requested
     if do_plot && t > 1
         plot_results_smoke(dat,1);
-        saveas(gcf,['../data/' dat.subj '/' strrep(dat.fileName,'mat','pdf')]);
+        saveas(gcf,['../data/' dat.subj '/' strrep(dat.fileName,'mat','png')]);
     end
     
 catch
