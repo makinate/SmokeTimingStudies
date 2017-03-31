@@ -4,7 +4,7 @@ function plot_results_combined_allSubj
 addpath([ pwd '/helper_functions']);   % add path to helper functions
 
 % subject list; expand this as more and more subjects come in
-subjs = {'EAC', 'MK', 'HS'};
+subjs = {'EAC', 'MK', 'HS', 'SHP', 'MM', 'MJM', 'SBM'};
 
 for s = 1:length(subjs)
     
@@ -62,9 +62,11 @@ mean_dens_disk = mean(allSubjDensDisk,1);
 std_dens_disk = std(allSubjDensDisk,[],1);
 
 
-f_resp = figure; hold on; %title(['Speed = ' num2str(speeds(s)) ', Distance = ' num2str(distances(d))]);
+f_resp = figure; hold on; 
 setupfig(16,16,16); % setup figure width, height, and font size (helperfunction)
-
+str = ['N = ' num2str(length(subjs))];
+dim = [.4 .5 .4 .4];
+annotation('textbox',dim,'String',str,'FitBoxToText','on');
 % speed effect
 subplot(2,2,1); hold on; title('speed');
 %plot(dat.speeds,mean_sp,'k-')
@@ -72,6 +74,7 @@ a = plot(smoke.speeds + 0.5, mean_speed_smoke,'-o','color',ColorIt('r'),'markerf
 errorbar(smoke.speeds + 0.5, mean_speed_smoke,std_speed_smoke);
 b = plot(disk.speeds - 0.5,  mean_speed_disk,'-o','color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
 errorbar(disk.speeds - 0.5,  mean_speed_disk,std_speed_disk);
+ylim([0 3]);
 xlabel('speed');
 ylabel('reaction time');
 legend([a,b], 'smoke', 'disk', 'Location', 'southwest');
@@ -87,6 +90,7 @@ plot(smoke.durationsFs + 0.5,       mean_dur_smoke,'-o','color',ColorIt('r'),'ma
 errorbar(disk.durationsFs + 0.5,    mean_dur_smoke, std_dur_smoke);
 plot(disk.durationsFs  - 0.5,       mean_dur_disk,'-o','color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
 errorbar(disk.durationsFs - 0.5,    mean_dur_disk,  std_dur_disk);
+ylim([0 3]);
 xlabel('duration');
 ylabel('reaction time');
 
@@ -101,6 +105,7 @@ plot(smoke.densities,    mean_dens_smoke,'-o','color',ColorIt('r'),'markerfaceco
 errorbar(smoke.densities, mean_dens_smoke, std_dens_smoke);
 plot(10.5,               mean_dens_disk,'-o', 'color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
 errorbar(10.5,            mean_dens_disk,  std_dens_disk);
+ylim([0 3]);
 xlabel('densities');
 ylabel('reaction time');
 
@@ -113,6 +118,7 @@ plot(smoke.distances + 0.5, mean_dist_smoke,'-o','color',ColorIt('r'),'markerfac
 errorbar(disk.distances + 0.5,    mean_dist_smoke, std_dist_smoke);
 plot(disk.distances  - 0.5, mean_dist_disk,'-o','color',ColorIt('k'),'markerfacecolor',ColorIt('k'))
 errorbar(disk.distances - 0.5,    mean_dist_disk,  std_dist_disk);
+ylim([0 3]);
 xlabel('distance');
 ylabel('reaction time');
 
