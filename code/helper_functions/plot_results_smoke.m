@@ -1,6 +1,6 @@
 function dat = plot_results_smoke(dat,showPlots)
 %
-% plot TTC performance for smoke and cylinders for a given dataset (dat)
+% plot TTC performance for smoke and disks for a given dataset (dat)
 %
 addpath([ pwd '/plots']);   % add path to helper functions
 % if dat is empty, you will be prompted to select one or more files with
@@ -127,8 +127,9 @@ for du = 1:length(dat.durationsFs)
             
             
             if showPlots
+                
                 % plot the median
-                h(d) = plot(speed(du,di,d,s), median_resp(du,di,d,s), '-', 'color',ColorIt(d),'linewidth',2);
+                h(d) = plot(squeeze(speed(du,di,d,:)), squeeze(median_resp(du,di,d,:)), '-', 'color',ColorIt(d),'linewidth',2);
                 
             end
             

@@ -11,7 +11,7 @@ dat.scr = select_screen(varargin);
 
 % find out participant code and whether this is a pre- or post-test run
 dat.subj        = input('Enter participant code:','s');
-test_type       = input('What test type is this? Enter 1 if smoke, enter 2 if cylinder:');
+test_type       = input('What test type is this? Enter 1 if smoke, enter 2 if disk:');
 training        = input('Is this a training session? Enter 1 if training, enter 0 if test:');
 
 % randomly decide which condition to run
@@ -35,9 +35,9 @@ if test_type == 1
     
 elseif test_type == 2
     
-    dat.test_type           = 'cylinder';
+    dat.test_type           = 'disk';
     dat.densities           = [99];
-    plume_object            = 'objects';
+    plume_object            = '';
     
 else
     error('invalid test type');
@@ -66,7 +66,7 @@ try
     [dat,keys]              = keys_setup_smoke(dat);      % key responses
     dat.start               = GetSecs;
     dat                     = stimulus_setup(dat);        % stimulus visual properties
-    
+      
     % hide mouse cursor
     HideCursor();
     
@@ -213,11 +213,7 @@ try
     ShowCursor();
     % draw and save plot if requested
     if do_plot && t > 1
-        if test_type == 1
-            plot_results_smoke(dat,1);
-        else
-            plot_results_cylinder(dat,1);
-        end
+        plot_results_smoke(dat,1);
         saveas(gcf,['../data/' dat.subj '/' strrep(dat.fileName,'mat','pdf')]);
     end
     
