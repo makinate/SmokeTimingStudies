@@ -1,4 +1,4 @@
-function run_smoke(varargin)
+function run_smoke_stereo(varargin)
 % test TTC estimation ability for smoke and cylindrical stimuli
 
 
@@ -70,6 +70,11 @@ try
     % hide mouse cursor
     HideCursor();
     
+    % if stereo rendering, opan two frame buffers
+    if stereo
+        PsychImaging('AddTask', 'General', 'InterleavedLineStereo', 1);
+    end
+    
     %% DRAW INTRO SCREEN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     Screen(w,'TextSize',dat.stm.fontSize);
     Screen('FillRect', w, [0 0 0]);
@@ -117,12 +122,25 @@ try
         display(['trial = ' num2str(trial) '  speed = ' num2str(speed) '   density = ' num2str(density)]);
         
         %preload video frames for this stimulus
-        frames = load_stimulus_frames(dat.scr.image_dir, dat.test_type, speed, density, duration, distance, repeat, 'cyclo');
-        
-        % load frames into texture indices
-        for x = 1:duration
-            textureIndex(x) = Screen('MakeTexture',w, frames(:,:,x));
+        if stereo
+            framesL = load_stimulus_frames(dat.scr.image_dir, dat.test_type, speed, density, duration, distance, repeat, 'left');
+            framesR = load_stimulus_frames(dat.scr.image_dir, dat.test_type, speed, density, duration, distance, repeat, 'right');
+            
+            % load frames into texture indices
+            for x = 1:duration
+                textureIndex(x) = Screen('MakeTexture',w, frames(:,:,x));
+            end
+            
+        else
+            frames = load_stimulus_frames(dat.scr.image_dir, dat.test_type, speed, density, duration, distance, repeat, 'cyclo');
+            
+            % load frames into texture indices
+            for x = 1:duration
+                textureIndex(x) = Screen('MakeTexture',w, frames(:,:,x));
+            end
         end
+        
+
         
         % give participant a break halfway
         if t == round(trialnum/2) && training ~= 1
