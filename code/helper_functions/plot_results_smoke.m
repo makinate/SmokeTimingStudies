@@ -95,6 +95,12 @@ for du = 1:length(dat.durationsFs)
                 distance(du, di, d, s) = dat.distances(di);
                 duration(du, di, d, s) = dat.durationsFs(du);
                 
+                % store 4D matrix in data structure
+                dat.speed = speed;
+                dat.density = density;
+                dat.distance = distance;
+                dat.duration = duration; 
+                
                 % make an index vector trials with this combination of parameters
                 trial_inds = dat.trials.speed == speed(du, di, d, s) & dat.trials.density == density(du, di, d, s) & dat.trials.distance == distance(du, di, d, s) & dat.trials.duration == duration(du, di, d, s) & ~isnan(dat.trials.resp);
                 
@@ -123,6 +129,7 @@ for du = 1:length(dat.durationsFs)
                 % throw them in a 4D matrix
                 median_resp(du, di, d, s) = median(dat.trials.resp(trial_inds));
                 
+                dat.median_resp = median_resp;
             end
             
             
