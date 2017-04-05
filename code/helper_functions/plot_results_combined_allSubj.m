@@ -8,10 +8,12 @@ subjs = {'EAC', 'MK', 'HS', 'SHP', 'MM', 'MJM', 'SBM', 'MJD', 'SLH', 'ESG', 'AMO
 
 
 % open txt file for writing
-f_ID = fopen('ANOVA_table.txt', 'w');
+f_ID  = fopen('ANOVA_table.txt', 'w');
+f_raw = fopen('raw_table.txt', 'w');
 
 % add header to file
 fprintf(f_ID, '%s %s %s %s %s %s\n', 'sbj', 'speed', 'density', 'distance', 'duration', 'resp');
+fprintf(f_raw, '%s %s %s %s %s %s %s\n', 'sbj', 'rep', 'speed', 'density', 'distance', 'duration', 'resp');
 for s = 1:length(subjs)
     
     data_path = ['../data/' subjs{s} '/'];
@@ -49,24 +51,34 @@ for s = 1:length(subjs)
                         
                         % save data into txt file for R
                         fprintf(f_ID, '%f %f %f %f %f %f\n', s,sp,den, dist,dur, tmp_resp);
+                        
+                        % save raw data for each rep
+                        for rep = [1:5]
+                            
+                            tmp_resp = disk.trials.resp(disk.trials.speed == sp & disk.trials.distance == dist & disk.trials.density == den & disk.trials.duration == dur & disk.trials.repeat == rep);
+                            fprintf(f_raw, '%f %f %f %f %f %f %f\n', s,rep, sp,den, dist,dur, tmp_resp);
+                        end
                     else
                         tmp_resp = smoke.median_resp(smoke.speed == sp & smoke.distance == dist & smoke.density == den & smoke.duration == dur);
                         % save data into txt file for R
-                        fprintf(f_ID, '%f %f %f %f %f %f\n', s,sp,den, dist,dur, tmp_resp);
+                        fprintf(f_ID, '%f %f %f %f %f %f\n', s, sp, den, dist,dur, tmp_resp);
+                        % save raw data for each rep
+                        for rep = [1:5]
+                            
+                            tmp_resp = smoke.trials.resp(smoke.trials.speed == sp & smoke.trials.distance == dist & smoke.trials.density == den & smoke.trials.duration == dur & smoke.trials.repeat == rep);
+                            fprintf(f_raw, '%f %f %f %f %f %f %f\n', s,rep, sp,den, dist,dur, tmp_resp);
+                        end
+                        
                     end
-                    
-                    
-                    
-                    
                 end
             end
         end
     end
     
 end
-keyboard
-fclose(f_ID);
 
+fclose(f_ID);
+fclose(f_raw);
 % compute mean and stdev across subjects
 mean_speed_smoke = mean(allSubjSpeedSmoke,1);
 std_speed_smoke = std(allSubjSpeedSmoke,[],1);
