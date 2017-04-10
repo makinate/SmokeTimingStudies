@@ -4,7 +4,7 @@ function plot_results_combined_allSubj
 addpath([ pwd '/helper_functions']);   % add path to helper functions
 
 % subject list; expand this as more and more subjects come in
-subjs = {'EAC', 'MK', 'HS', 'SHP', 'MM', 'MJM', 'SBM', 'MJD', 'SLH', 'ESG', 'AMO'};
+subjs = {'EAC', 'MK', 'HS', 'SHP', 'MM', 'MJM', 'SBM', 'MJD', 'SLH', 'ESG', 'AMO', 'BVB', 'SRF', 'IWP'};
 
 
 % open txt file for writing
