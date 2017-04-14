@@ -31,13 +31,13 @@ if test_type == 1
     % if a pre-test, set up initial pre-test variables
     dat.test_type           = 'smoke';
     dat.densities           = [01 10 20];    % smoke density conditions
-    plume_object            ='plumes';
+    plume_object            =' plumes';
     
 elseif test_type == 2
     
     dat.test_type           = 'disk';
     dat.densities           = [99];
-    plume_object            = '';
+    plume_object            = 's';
     
 else
     error('invalid test type');
@@ -74,10 +74,10 @@ try
     Screen(w,'TextSize',dat.stm.fontSize);
     Screen('FillRect', w, [0 0 0]);
     
-    DrawFormattedText(w, ['Welcome to our experiment! \nYou will see a number of ' dat.test_type ' ' plume_object ' moving closer to you.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/3, [255 255 255]);
-    DrawFormattedText(w, ['The ' dat.test_type ' ' plume_object ' will disappear before they actually reach you.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/5, [255 255 255]);
-    DrawFormattedText(w, ['Press the space bar at the time \nyou think that the ' dat.test_type ' would have actually reached you.'], 'center', dat.scr.y_center_pix, [255 255 255]);
-    DrawFormattedText(w, 'Press space bar to start', 'center', dat.scr.y_center_pix + dat.scr.heightPix/4, [255 255 255]);
+    DrawFormattedText(w, ['Welcome to our experiment! \nYou will see a number of ' dat.test_type plume_object ' moving closer to you.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/3, [255 255 255]);
+    DrawFormattedText(w, ['The ' dat.test_type plume_object ' will disappear before they actually reach you.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/5, [255 255 255]);
+    DrawFormattedText(w, ['Press the space bar (yellow) at the time \nyou think that the ' dat.test_type ' would have actually reached you.'], 'center', dat.scr.y_center_pix, [255 255 255]);
+    DrawFormattedText(w, 'Press control (red button) to start', 'center', dat.scr.y_center_pix + dat.scr.heightPix/4, [255 255 255]);
     Screen('Flip',  w, [], 1);
     KbWait(-3);
     
@@ -128,7 +128,7 @@ try
         if t == round(trialnum/2) && training ~= 1
             Screen('FillRect', w, [0 0 0]);
             DrawFormattedText(w, ['You are halfway done with this section! \nTake a short break if you want to.'], 'center', dat.scr.y_center_pix - dat.scr.heightPix/3, [255 255 255]);
-            DrawFormattedText(w, 'Press space bar to continue', 'center', dat.scr.y_center_pix + dat.scr.heightPix/4, [255 255 255]);
+            DrawFormattedText(w, 'Press control (red button) to continue', 'center', dat.scr.y_center_pix + dat.scr.heightPix/4, [255 255 255]);
             Screen('Flip',  w, [], 1);
             KbWait(-3);
         end
@@ -136,11 +136,13 @@ try
         
         % prompt for key press to start
         Screen('FillRect', w, [0 0 0]);
-        DrawFormattedText(w, 'Press space bar to start', 'center', dat.scr.y_center_pix - dat.scr.heightPix/2.25, [255 255 255]);
+        DrawFormattedText(w, 'Press control (red button) to start', 'center', dat.scr.y_center_pix - dat.scr.heightPix/2.25, [255 255 255]);
         draw_fixation_circle(w,dat);
         DrawFormattedText(w, '+', 'center', 'center', [255 255 255]);
         Screen('Flip',  w, [], 1);
-        KbWait(-3);
+        KbWait(-3, 2); % wait for button press
+        KbWait(-3, 1); % wait for button to be released
+        
         
         % start trial with fixation pattern only
         Screen('FillRect', w, [0 0 0]);
@@ -177,6 +179,7 @@ try
             break
         end
         
+        WaitSecs(0.25);
         Screen('FillRect', w, [0 0 0]);
         DrawFormattedText(w, 'Loading next trial...', 'center', 'center', [255 255 255]);
         Screen('Flip',  w, [], 1);
