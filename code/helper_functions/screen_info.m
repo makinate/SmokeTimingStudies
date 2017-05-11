@@ -23,7 +23,7 @@ switch screen_name
         
         scr.letter_intensity_difference = 80; % number less than 106, smaller numbers should make the letter task harder
         
-        scr.image_dir = '/users/makinate/Dropbox/Dartmouth/Smoke/Manta/render_out/VSS'; 
+        scr.image_dir = '/users/makinate/Dropbox/Dartmouth/Smoke/Manta/render_out/VSS/new_speeds'; 
  
     case 'maxLab'  % this is a Asus VS238H-P
         

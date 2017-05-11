@@ -20,6 +20,7 @@ end
 
 % get file listing
 listing = dir([image_folders '/*.png']);
+display(listing);
 
 % read in image to video
 for x = 1: duration
