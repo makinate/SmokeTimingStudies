@@ -7,7 +7,7 @@ addpath([ pwd '/helper_functions']);   % add path to helper functions
 % study1: 
 %subjs = {'EAC', 'MK', 'HS', 'SHP', 'MM', 'MJM', 'SBM', 'MJD', 'SLH', 'ESG', 'AMO', 'BVB', 'SRF', 'IWP', 'KCH'};
 % study 2
-%subjs = {'KB','CC', 'ITF', 'SP', 'DG', 'SH', 'AR', 'CS', 'DN', 'HV', 'JM', 'AC'};
+% subjs = {'KB','CC', 'ITF', 'SP', 'DG', 'SH', 'AR', 'CS', 'DN', 'HV', 'JM', 'AC'};
 % combined
 subjs = {'EAC', 'MK', 'HS', 'SHP', 'MM', 'MJM', 'SBM', 'MJD', 'SLH', 'ESG', 'AMO', 'BVB', 'SRF', 'IWP', 'KCH','KB','CC', 'ITF', 'SP', 'DG', 'SH', 'AR', 'CS', 'DN', 'HV', 'JM', 'AC'};
 
@@ -19,6 +19,7 @@ f_raw = fopen('raw_table.txt', 'w');
 % add header to file
 fprintf(f_ID, '%s %s %s %s %s %s\n', 'sbj', 'speed', 'density', 'distance', 'duration', 'resp');
 fprintf(f_raw, '%s %s %s %s %s %s %s\n', 'sbj', 'rep', 'speed', 'density', 'distance', 'duration', 'resp');
+
 for s = 1:length(subjs)
     
     data_path = ['../data/' subjs{s} '/'];
@@ -49,7 +50,7 @@ for s = 1:length(subjs)
     for den = [1 10 20 99]
         for dist = [210 230 250]
             for dur = [35 70]
-                for sp = [10 20]
+                for sp = [10 12 15 20]
                     if den == 99
                         
                         tmp_resp = disk.median_resp(disk.speed == sp & disk.distance == dist & disk.density == den & disk.duration == dur);
@@ -65,6 +66,8 @@ for s = 1:length(subjs)
                         end
                     else
                         tmp_resp = smoke.median_resp(smoke.speed == sp & smoke.distance == dist & smoke.density == den & smoke.duration == dur);
+                        
+                        
                         % save data into txt file for R
                         fprintf(f_ID, '%f %f %f %f %f %f\n', s, sp, den, dist,dur, tmp_resp);
                         % save raw data for each rep
