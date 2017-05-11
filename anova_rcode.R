@@ -3,7 +3,7 @@ library(dplyr)
 library(psych) 
 
 source("~/Git_root/SmokeTimingStudies/multiplot.r")
-dat <- read_delim("~/Git_root/SmokeTimingStudies/code/ANOVA_table.txt"," ", escape_double = FALSE, trim_ws = TRUE)
+dat <- read_delim("~/Git_root/SmokeTimingStudies/code/raw_table.txt"," ", escape_double = FALSE, trim_ws = TRUE)
 
 
 # Describe the resp variable by the IVs
@@ -22,7 +22,7 @@ hist(dat$resp)
 outlier_threshold = mean(dat$resp) + 3 * sd(dat$resp)
 
 # remove outliers
-dat_filt = filter(dat, resp < outlier_threshold)
+dat_filt = filter(dat, resp < outlier_threshold, density != 99)
 
 # test for main effects (data is not normally distributed)
 m = aov(resp ~ speed    + 
@@ -43,15 +43,13 @@ hist(m.res)
 
 
 # test for interaction effects (data is not normally distributed)
-m = aov(resp ~ speed * 
-               distance * 
-               duration * 
-               as.factor(density) + 
-               Error(as.factor(sbj)), 
+m <-aov(resp ~ speed * distance * duration * as.ordered(density) + Error(as.factor(sbj)), 
         data = dat_filt)
 
 # get a summary of m1
 summary(m)
+
+TukeyHSD(x=m, 'dat_filt$density', conf.level=0.95)
 
 # get the residuals
 m.pr <- proj(m)                   
