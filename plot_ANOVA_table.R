@@ -5,7 +5,7 @@ library(dplyr)
 source("~/Git_root/SmokeTimingStudies/multiplot.r")
 dat <- read_delim("~/Git_root/SmokeTimingStudies/code/ANOVA_table.txt"," ", escape_double = FALSE, trim_ws = TRUE)
 
-dat = filter(dat, speed == 20)
+dat = filter(dat, speed == 20, duration == 35, is.na(resp) != T)
 
 #computation of the standard error of the mean
 sem <- function(x) sd(x)/sqrt(length(x))
@@ -47,8 +47,12 @@ p1 = ggplot(data = d.sum, aes(x = as.factor(s_d), y = resp))+
   geom_errorbar(aes(ymax = resp + se, ymin = resp - se), width = 0.25)+
   xlab('Stimulus') + ylab('Response time [s]')+
   scale_fill_brewer(palette="Set1")+
-  coord_cartesian(ylim=c(0.8,1.3)) +
-  theme(legend.position="none")
+  coord_cartesian(ylim=c(1,2)) +
+  theme(legend.position="none")+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) 
 
 
 # p1 = ggplot()+
@@ -80,7 +84,7 @@ p2 = ggplot()+
                                         ymin = resp[,1] - resp[,2]), 
                  width = 0.25)+
   xlab('duration') + ylab('Response time [s]')+
-  ylim(0.8, 1.3)+
+  ylim(1, 2)+
   scale_color_brewer(palette="Set1")
 
 smoke_density$dens = ifelse(smoke_density$Group.1 == 1, '0low', 
@@ -102,10 +106,14 @@ p3 = ggplot()+
                                            ymin = resp[,1] - resp[,2]), 
                  width = 0.25)+
   xlab('density') + ylab('Response time [s]')+ 
-  coord_cartesian(ylim=c(0.8,1.3)) +
+  coord_cartesian(ylim=c(1,2)) +
   #annotate("text", x = '3disk', y = 1.19, label = "disk")+
   scale_fill_brewer(palette="Set1") + theme(legend.position="none")+
-  scale_x_discrete(labels=c("low","medium","high", 'disk'))
+  scale_x_discrete(labels=c("low","medium","high", 'disk'))+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) 
 
 p4 = ggplot()+
   geom_point    (data = smoke_distance, aes(x = Group.1, y = resp[,1], color = 'smoke'))+
@@ -150,4 +158,5 @@ h.d = filter(dat, density == 20)
 t.test(l.d$resp,m.d$resp, paired = T)
 t.test(l.d$resp,h.d$resp, paired = T)
 t.test(m.d$resp,h.d$resp, paired = T)
+
 
