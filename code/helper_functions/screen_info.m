@@ -6,7 +6,7 @@ scr.name  = screen_name;
 
 switch screen_name
     
-    case 'mmLab'  % this is a ViewSonic V3D231 Modelnumber: VS14136
+    case 'ViewSonic'  % this is a ViewSonic V3D231 Modelnumber: VS14136
         
         scr.screenNumber        = 0;        % Use max screen number - 0 for primary screen or single screen set ups, 1 for secondary screen (only if 2 screen are enabled)
         

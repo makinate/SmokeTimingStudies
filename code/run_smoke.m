@@ -226,6 +226,3 @@ catch
     psychrethrow(psychlasterror);
     
 end
-
-
-
