@@ -15,12 +15,12 @@ elseif strcmp(eye,'left')
 elseif strcmp(eye,'right')
     image_folders = [image_dir '/' test_type '/speed' num2str(speed) '_rep' num2str(sprintf('%02d',repeat)) '_den' num2str(sprintf('%02d',density)) '_dist' num2str(distance) '_' test_type '_front'];
 end
-    display(image_folders)
+display(image_folders);
 
 
 % get file listing
 listing = dir([image_folders '/*.png']);
-display(listing);
+
 
 % read in image to video
 for x = 1: duration

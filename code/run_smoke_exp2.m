@@ -1,5 +1,7 @@
-function run_smoke(varargin)
+function run_smoke_exp2(varargin)
+% 2nd version of smoke timing studies using faster speeds than exp 1
 % test TTC estimation ability for smoke and cylindrical stimuli
+ 
 
 
 addpath([ pwd '/helper_functions']);   % add path to helper functions
@@ -21,12 +23,10 @@ training        = input('Is this a training session? Enter 1 if training, enter 
 % set up stimulus parameters (these are just ones I want easy access to,
 % others are set in helper_functions keys_setup..., trials_setup...stimulus_setup...
 
-dat.speeds       = [12 15];         % speed conditions
+dat.speeds       = [250 300 350];         % speed conditions
 dat.durationsFs  = [35 70];         % trial duration in frames; short (750 ms) --> 45 frames; long (1250 ms) --> 1250 ms
 dat.distances    = [210, 230, 250]; % distance of camera (cm) from smoke source
 dat.repeats      = [5];             % number of repeats for each coherence level (at each motion direction), we can do less for high coherences
-
-
 
 if test_type == 1
     
@@ -44,8 +44,6 @@ elseif test_type == 2
 else
     error('invalid test type');
 end
-
-keyboard
 
 dat.feedback    = 0; % provide auditory feedback? should be zero unless debugging
 do_plot         = 1; % plot results immediately
@@ -70,7 +68,7 @@ try
     [dat,keys]              = keys_setup_smoke(dat);      % key responses
     dat.start               = GetSecs;
     dat                     = stimulus_setup(dat);        % stimulus visual properties
-    
+      
     % hide mouse cursor
     HideCursor();
     
